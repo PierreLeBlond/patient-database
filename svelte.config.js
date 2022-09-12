@@ -13,16 +13,12 @@ const config = {
 		adapter: adapter({
 		}),
 		// https://www.npmjs.com/package/@sveltejs/adapter-static
-		trailingSlash: 'always'
+		// trailingSlash: 'always'
 	},
 
 	prerender: {
 		// This can be false if you're using a fallback (i.e. SPA mode)
 		default: true
-	},
-
-	paths: {
-		base: process.env.NODE_ENV === 'development' ? '' : '/patient-database',
 	},
 
 	// Override http methods in the Todo forms
