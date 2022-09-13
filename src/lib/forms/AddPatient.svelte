@@ -24,7 +24,7 @@
 </script>
 
 <div
-	class="w-96 h-96 flex items-center justify-center space-y-4 flex-col bg-violet-200 rounded border-2 border-violet-400"
+	class="w-full h-full flex items-center justify-center space-y-4 flex-col bg-violet-200 rounded border-2 border-violet-400"
 >
 	<Text name="first name" bind:value={firstName} bind:valid={validFirstName} placeholder="Lucas" />
 	<Text name="last name" bind:value={lastName} bind:valid={validLastName} placeholder="Taract" />
