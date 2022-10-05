@@ -1,5 +1,7 @@
-import { PUBLIC_API_BASE_URL } from '$env/static/public';
 import { redirect } from '@sveltejs/kit';
+import dotenv from 'dotenv';
+
+dotenv.config();
 
 interface RequestOptions {
   method: string;
@@ -20,7 +22,7 @@ async function send({ method, path, data, token }: { method: string, path: strin
     options.headers['authorization'] = `Bearer ${token}`;
   }
 
-  const response = await fetch(`${PUBLIC_API_BASE_URL}${path}`, options);
+  const response = await fetch(`${process.env.PUBLIC_API_BASE_URL}${path}`, options);
   const body = await response.json();
 
   if (!response.ok) {

@@ -3,7 +3,7 @@
 @tailwind utilities;
 
 body {
-  font-family: 'Droid Sans Mono', 'monospace', monospace
+  font-family: calibri, -apple-system, sans-serif
 }
 
 @layer components {
