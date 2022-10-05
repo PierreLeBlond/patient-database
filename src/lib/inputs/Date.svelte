@@ -6,7 +6,7 @@
 	export let placeholder = '';
 	export let autocomplete = 'on';
 
-	export let pattern = '.*';
+	export let pattern = '^d{4}-(0[1-9]|1[012])-(0[1-9]|[12][0-9]|3[01])$';
 	export let required = false;
 
 	export let valid = false;
@@ -43,7 +43,7 @@
 				{#if valueMissing}
 					obligatoire
 				{:else if patternMismatch}
-					caractere interdit
+					date au format yyyy-mm-dd
 				{/if}
 			</span>
 		{/if}

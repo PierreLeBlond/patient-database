@@ -1,90 +1,99 @@
 <script lang="ts">
-	import AddPatient from '$lib/forms/AddPatient.svelte';
-	import { fly } from 'svelte/transition';
-	import { tweened } from 'svelte/motion';
-	import getPatients from './getPatients';
-	import type { Patient, PatientData } from '$lib/Patient/Patient';
-	import deletePatient from './deletePatient';
-	import addPatient from './addPatient';
 	import SearchBar from '$lib/inputs/SearchBar.svelte';
+	import Modal from '$lib/modals/Modal.svelte';
+	import DeletePatient from '$lib/modals/DeletePatient.svelte';
+	import { validate } from '$lib/Patient/schema';
+	import type { Patient } from '$lib/Patient/Patient';
+	import AddPatient from '$lib/modals/AddPatient.svelte';
+	import Navigating from '$lib/navigation/Navigating.svelte';
+	import type { PageData } from './$types';
 
-	export let data: Patient[];
-	let patients: Patient[] = Object.values(data);
+	export let data: PageData;
+	const update = async () => {
+		const response = await fetch(`/patients.json`);
+		data = await response.json();
+	};
 
-	// Search patient
 	let searchValue: string = '';
+	$: lowerCaseSearchValue = searchValue.toLowerCase();
 
-	// Add patient
-	let display = false;
-	let blur = tweened(0, { duration: 300 });
-	const displayAddPatient = () => {
-		display = true;
-		blur.set(4);
-	};
-	const hideAddPatient = () => {
-		display = false;
-		blur.set(0);
+	$: patients = searchValue
+		? data.patients.filter(
+				({ patient }: { patient: Patient }) =>
+					patient.firstname.toLowerCase().includes(lowerCaseSearchValue) ||
+					patient.lastname.toLowerCase().includes(lowerCaseSearchValue)
+		  )
+		: data.patients;
+	$: total = data.patients.length;
+	$: filtered = patients.length;
+
+	let deleteDemandFirstName = '';
+	let deleteDemandId = '';
+	let deleteModalDisplayed = false;
+	const handleDeleteDemand = (firstName: string, id: string) => {
+		deleteDemandFirstName = firstName;
+		deleteDemandId = id;
+		deleteModalDisplayed = true;
 	};
 
-	// Update patients list
-	const updatePatients = () => {
-		getPatients(searchValue).then((searchResults) => {
-			patients = searchResults;
-		});
+	const handleDeleteConfirmation = () => {
+		fetch(`patient/${deleteDemandId}.json`, { method: 'DELETE' })
+			.then(update)
+			.then(() => {
+				deleteModalDisplayed = false;
+			});
 	};
-	// updatePatients();
 
-	let blocked = false;
-	const handleAddPatientEvent = (event: { detail: PatientData }) => {
-		blocked = true;
-		addPatient(event.detail).then(() => {
-			updatePatients();
-			blocked = false;
-		});
+	let addModalDisplayed = false;
+	const handleAddPatientEvent = ({ detail }: { detail: Patient }) => {
+		validate(detail);
+		fetch('/patient.json', {
+			method: 'POST',
+			body: JSON.stringify({
+				patient: detail
+			}),
+			headers: {
+				'Content-type': 'application/json; charset=UTF-8'
+			}
+		}).then(update);
 	};
 </script>
 
-<div
-	class="w-full h-full flex flex-col space-y-8 px-4 sm:px-24 pt-8 sm:pt-24"
-	style="filter: blur({$blur}px)"
->
-	<div class="w-64 h-11 flex items-center">
-		<a href="/" class="w-11 h-11 flex items-center justify-center text-violet-600">
-			<svg
-				xmlns="http://www.w3.org/2000/svg"
-				width="24"
-				height="24"
-				fill="currentColor"
-				viewBox="0 0 16 16"
-			>
-				<path
-					fill-rule="evenodd"
-					d="M2 13.5V7h1v6.5a.5.5 0 0 0 .5.5h9a.5.5 0 0 0 .5-.5V7h1v6.5a1.5 1.5 0 0 1-1.5 1.5h-9A1.5 1.5 0 0 1 2 13.5zm11-11V6l-2-2V2.5a.5.5 0 0 1 .5-.5h1a.5.5 0 0 1 .5.5z"
-				/>
-				<path
-					fill-rule="evenodd"
-					d="M7.293 1.5a1 1 0 0 1 1.414 0l6.647 6.646a.5.5 0 0 1-.708.708L8 2.207 1.354 8.854a.5.5 0 1 1-.708-.708L7.293 1.5z"
-				/>
-			</svg>
-		</a>
-	</div>
-	<SearchBar bind:searchValue on:input={updatePatients} />
+<Navigating />
+<Modal bind:displayed={deleteModalDisplayed}>
+	<DeletePatient validName={deleteDemandFirstName} on:submit={handleDeleteConfirmation} />
+</Modal>
+<Modal bind:displayed={addModalDisplayed}>
+	<AddPatient on:submit={handleAddPatientEvent} />
+</Modal>
+<div class="relative w-full h-full flex flex-col space-y-8 px-4 sm:px-24 py-8">
+	<SearchBar bind:searchValue />
 	<button
-		class="w-64 h-11 text-violet-800 bg-gray-200 rounded border border-violet-600 transition-colors duration-300"
-		on:mousedown={displayAddPatient}>New patient</button
+		class="w-64 h-11 flex-shrink-0 text-gray-300 bg-gray-800 rounded transition-colors duration-300"
+		on:click={() => {
+			addModalDisplayed = true;
+		}}
 	>
-	<ul class="w-full flex flex-col space-y-8">
-		{#each patients as patient}
-			<li>
+		Ajouter une fiche
+	</button>
+	<div>{filtered} patient(s) trouvés sur {total}</div>
+	<ul class="w-full flex flex-col space-y-2 overflow-y-auto snap-y">
+		{#each patients as { id, patient }}
+			<li class="snap-start">
 				<a
 					data-sveltekit-prefetch
-					href="../patient/{patient.id}"
-					class="w-full h-11 flex items-center justify-between pl-4 text-gray-800 bg-gray-200 rounded border border-violet-600"
+					href="/patient/{id}"
+					class="w-full h-11 flex items-center justify-between bg-gray-800 text-gray-300 rounded border border-gray-800"
 				>
-					<div>{patient.data.firstName} {patient.data.lastName}</div>
 					<div
-						class="flex justify-center items-center w-11 h-full place-self-end bg-red-500"
-						on:click|preventDefault={() => deletePatient(patient.id).then(updatePatients)}
+						class="w-11 h-full flex items-center justify-center border rounded-l border-gray-300"
+					>
+						<h2>{patient.file}</h2>
+					</div>
+					<div>{patient.firstname} {patient.lastname}</div>
+					<div
+						class="flex justify-center items-center w-11 h-full place-self-end bg-red-500 rounded-r"
+						on:click|preventDefault={() => handleDeleteDemand(patient.firstname, id)}
 					>
 						<svg
 							xmlns="http://www.w3.org/2000/svg"
@@ -108,13 +117,3 @@
 		{/each}
 	</ul>
 </div>
-
-{#if display}
-	<div class="w-full h-full absolute" on:mousedown={hideAddPatient} />
-{/if}
-
-{#if display}
-	<div class="w-full sm:w-96 h-96 absolute px-4 sm:px-0" transition:fly={{ y: 200, duration: 300 }}>
-		<AddPatient {blocked} on:submit={handleAddPatientEvent} />
-	</div>
-{/if}

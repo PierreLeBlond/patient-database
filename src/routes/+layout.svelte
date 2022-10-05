@@ -1,9 +1,15 @@
-<script>
+<script lang="ts">
 	import '../app.css';
+	import Nav from '$lib/navigation/Nav.svelte';
 </script>
 
 <div
-	class="w-screen h-screen relative flex bg-gray-100 items-center justify-center overflow-hidden"
+	class="w-screen h-screen relative flex flex-col bg-gray-100 text-gray-800 items-center justify-start"
 >
-	<slot />
+	<div class="w-full h-16 relative flex-shrink-0">
+		<Nav />
+	</div>
+	<div class="w-full h-full relative flex flex-col overflow-hidden">
+		<slot />
+	</div>
 </div>

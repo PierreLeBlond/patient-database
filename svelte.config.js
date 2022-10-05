@@ -12,8 +12,6 @@ const config = {
 	kit: {
 		adapter: adapter({
 		}),
-		// https://www.npmjs.com/package/@sveltejs/adapter-static
-		// trailingSlash: 'always'
 	},
 
 	prerender: {

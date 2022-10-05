@@ -1,9 +1,9 @@
 import type { PageServerLoad } from "./$types";
-import { PUBLIC_SERVER_BASE_URL } from '$env/static/public';
+import { get } from "$lib/api/api";
 
-export async function load({ params }: PageServerLoad) {
+export const load: PageServerLoad = async ({ params, locals }) => {
 	const { id } = params;
-	const response = await fetch(`${PUBLIC_SERVER_BASE_URL}/patient/${id}`);
-	const data = await response.json();
-	return { id, data };
+	const body = await get(`/patients/${id}`, locals.user);
+	const { data } = body;
+	return data;
 }

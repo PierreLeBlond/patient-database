@@ -1,0 +1,16 @@
+// https://svelte.dev/tutorial/actions
+export const clickOutside = (node) => {
+  const handleClick = (event) => {
+    if (!node.contains(event.target)) {
+      node.dispatchEvent(new CustomEvent("outclick"));
+    }
+  };
+
+  document.addEventListener("click", handleClick, true);
+
+  return {
+    destroy() {
+      document.removeEventListener("click", handleClick, true);
+    }
+  };
+}

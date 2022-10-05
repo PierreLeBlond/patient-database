@@ -1,7 +1,6 @@
-import { get } from "$lib/api/api";
+import { redirect } from "@sveltejs/kit";
 import type { PageServerLoad } from "./$types";
 
 export const load: PageServerLoad = async ({ locals }) => {
-  const { data } = await get(`/patients`, locals.user);
-  return data;
+  throw redirect(302, locals.user ? '/patients' : '/login');
 }
