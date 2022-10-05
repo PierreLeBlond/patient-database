@@ -2,7 +2,6 @@
 	import { invalidateAll } from '$app/navigation';
 	import Password from '$lib/inputs/Password.svelte';
 	import Text from '$lib/inputs/Text.svelte';
-	import Navigating from '$lib/navigation/Navigating.svelte';
 	import { fade } from 'svelte/transition';
 
 	let username: string = '';
@@ -44,7 +43,6 @@
 	};
 </script>
 
-<Navigating />
 <div class="w-full h-full flex items-center justify-center bg-gray-200">
 	<form class="flex items-center justify-center space-y-4 flex-col">
 		<fieldset>

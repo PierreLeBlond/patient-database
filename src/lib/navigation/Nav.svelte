@@ -1,6 +1,7 @@
 <script>
 	import Logout from './Logout.svelte';
 	import { page } from '$app/stores';
+	import Navigating from './Navigating.svelte';
 </script>
 
 <div class="w-full h-full flex items-center bg-gray-800">
@@ -52,3 +53,4 @@
 		<Logout />
 	{/if}
 </div>
+<Navigating />

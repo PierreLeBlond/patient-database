@@ -1,7 +1,7 @@
 // https://svelte.dev/tutorial/actions
-export const clickOutside = (node) => {
-  const handleClick = (event) => {
-    if (!node.contains(event.target)) {
+export const clickOutside = (node: Node) => {
+  const handleClick = (event: MouseEvent) => {
+    if (!node.contains(event.target as Node)) {
       node.dispatchEvent(new CustomEvent("outclick"));
     }
   };

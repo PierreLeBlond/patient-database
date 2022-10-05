@@ -5,7 +5,6 @@
 	import { validate } from '$lib/Patient/schema';
 	import type { Patient } from '$lib/Patient/Patient';
 	import AddPatient from '$lib/modals/AddPatient.svelte';
-	import Navigating from '$lib/navigation/Navigating.svelte';
 	import type { PageData } from './$types';
 
 	export let data: PageData;
@@ -59,7 +58,6 @@
 	};
 </script>
 
-<Navigating />
 <Modal bind:displayed={deleteModalDisplayed}>
 	<DeletePatient validName={deleteDemandFirstName} on:submit={handleDeleteConfirmation} />
 </Modal>
