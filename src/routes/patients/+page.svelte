@@ -6,23 +6,17 @@
 	import type { Patient } from '$lib/Patient/Patient';
 	import AddPatient from '$lib/modals/AddPatient.svelte';
 	import type { PageData } from './$types';
+	import { feedback } from '$lib/stores/feedback';
 
 	export let data: PageData;
+
+	let searchValue: string = '';
 	const update = async () => {
-		const response = await fetch(`/patients.json`);
+		const response = await fetch(`/patients.json?search=${searchValue}`);
 		data = await response.json();
 	};
 
-	let searchValue: string = '';
-	$: lowerCaseSearchValue = searchValue.toLowerCase();
-
-	$: patients = searchValue
-		? data.patients.filter(
-				({ patient }: { patient: Patient }) =>
-					patient.firstname.toLowerCase().includes(lowerCaseSearchValue) ||
-					patient.lastname.toLowerCase().includes(lowerCaseSearchValue)
-		  )
-		: data.patients;
+	$: patients = data.patients;
 	$: total = data.patients.length;
 	$: filtered = patients.length;
 
@@ -39,6 +33,7 @@
 		fetch(`patient/${deleteDemandId}.json`, { method: 'DELETE' })
 			.then(update)
 			.then(() => {
+				$feedback = 'Suppression réussite !';
 				deleteModalDisplayed = false;
 			});
 	};
@@ -54,7 +49,10 @@
 			headers: {
 				'Content-type': 'application/json; charset=UTF-8'
 			}
-		}).then(update);
+		}).then(() => {
+			$feedback = 'Fiche ajoutée !';
+			return update();
+		});
 	};
 </script>
 
@@ -65,7 +63,7 @@
 	<AddPatient on:submit={handleAddPatientEvent} />
 </Modal>
 <div class="relative w-full h-full flex flex-col space-y-8 px-4 sm:px-24 py-8">
-	<SearchBar bind:searchValue />
+	<SearchBar bind:searchValue on:input={update} />
 	<button
 		class="w-64 h-11 flex-shrink-0 text-gray-300 bg-gray-800 rounded transition-colors duration-300"
 		on:click={() => {

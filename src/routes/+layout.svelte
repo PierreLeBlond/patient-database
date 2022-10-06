@@ -1,7 +1,10 @@
 <script lang="ts">
 	import '../app.css';
 	import Nav from '$lib/navigation/Nav.svelte';
+	import Toaster from '$lib/toaster/toaster.svelte';
 </script>
+
+<Toaster />
 
 <div
 	class="w-screen h-screen relative flex flex-col bg-gray-100 text-gray-800 items-center justify-start"

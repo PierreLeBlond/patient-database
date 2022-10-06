@@ -8,6 +8,8 @@
 	import TextArea from '$lib/inputs/TextArea.svelte';
 	import { afterNavigate, beforeNavigate, goto } from '$app/navigation';
 	import Modal from '$lib/modals/Modal.svelte';
+	import Day from '$lib/inputs/Day.svelte';
+	import { feedback } from '$lib/stores/feedback';
 
 	export let data: PageData;
 
@@ -36,6 +38,7 @@
 			}
 		}).then(() => {
 			data.patient = { ...patient };
+			$feedback = 'Modifications sauvegardées !';
 			blocked = false;
 		});
 	};
@@ -78,7 +81,7 @@
 
 <div class="w-full grid grid-cols-2 sm:grid-cols-6 gap-x-4 p-4 overflow-y-auto">
 	<div class="w-full col-span-2">
-		<Text bind:value={patient.date} name="Date d'examen" />
+		<Day bind:value={patient.date} name="Date d'examen" />
 	</div>
 	<div class="w-full col-span-2">
 		<Number bind:value={patient.file} name="Numéro de fiche" />
@@ -190,7 +193,7 @@
 			class="w-32 sm:w-64 h-11 text-gray-300 bg-gray-800 disabled:bg-gray-200 rounded border border-gray-300 transition-colors duration-300"
 			on:click|preventDefault={handleClick}
 		>
-			Save changes
+			Sauvegarder
 		</button>
 	</div>
 

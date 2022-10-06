@@ -1,14 +1,16 @@
 <script lang="ts">
+	import Day from '$lib/inputs/Day.svelte';
 	import Text from '$lib/inputs/Text.svelte';
 	import { createEventDispatcher } from 'svelte';
 	import { validate } from '$lib/Patient/schema';
 	import Number from '$lib/inputs/Number.svelte';
+	import { formatDate } from '$lib/utils/formatDate';
 
 	const eventDispatcher = createEventDispatcher();
 
 	let patient = {
-		date: '',
-		file: 0,
+		date: formatDate(new Date(), 'yyyy-mm-dd'),
+		file: 1,
 		firstname: '',
 		lastname: ''
 	};
@@ -28,7 +30,7 @@
 	class="w-full h-full grid grid-cols-2 bg-gray-300 gap-x-4 p-4 rounded border-2 border-gray-800"
 >
 	<fieldset class="col-span-1">
-		<Text bind:value={patient.date} name="Date d'examen" required={true} />
+		<Day bind:value={patient.date} name="Date d'examen" />
 	</fieldset>
 	<fieldset class="col-span-1">
 		<Number bind:value={patient.file} name="Numéro de fiche" required={true} />
