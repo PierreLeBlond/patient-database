@@ -8,7 +8,7 @@
 	{#if $page.data.user}
 		{#if $page.data.home}
 			<a
-				href="/settings"
+				href="/stats"
 				class="h-full aspect-square flex items-center justify-center text-gray-300 cursor-pointer"
 			>
 				<svg
