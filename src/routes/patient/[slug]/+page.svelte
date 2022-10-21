@@ -10,37 +10,50 @@
 	import Modal from '$lib/modals/Modal.svelte';
 	import Day from '$lib/inputs/Day.svelte';
 	import { feedback } from '$lib/stores/feedback';
+	import Email from '$lib/inputs/Email.svelte';
+	import { formatDate } from '$lib/utils/formatDate';
+	import ActsForm from '$lib/forms/ActsForm.svelte';
+	import rfdc from 'rfdc';
+	import type { Patient } from '$lib/Patient/Patient';
+
+	const clone = rfdc();
 
 	export let data: PageData;
 
-	let patient = { ...data.patient };
+	let patient: Patient = clone(data.patient);
 	afterNavigate(() => {
-		patient = { ...data.patient };
+		patient = clone(data.patient);
+		actsForm.update(patient.acts);
 	});
-
-	const keys = Object.keys(schema.properties);
 
 	$: valid = validate(patient);
 
+	const keys = Object.keys(schema.properties);
 	const compare = (source: any, target: any) => keys.some((key) => source[key] != target[key]);
-	$: changed = compare(patient, data.patient);
+	$: patientChanged = compare(patient, data.patient);
+
+	let actsChanged = false;
+	$: changed = patientChanged || actsChanged;
 
 	let blocked = false;
 	$: disabled = !valid || blocked || !changed;
 
-	const handleClick = () => {
+	let actsForm: ActsForm;
+	const save = () => {
 		blocked = true;
-		fetch(`/patient/${data.id}.json`, {
+		fetch(`/patient/${patient.id}.json`, {
 			method: 'POST',
 			body: JSON.stringify(patient),
 			headers: {
 				'Content-type': 'application/json; charset=UTF-8'
 			}
-		}).then(() => {
-			data.patient = { ...patient };
-			$feedback = 'Modifications sauvegardées !';
-			blocked = false;
-		});
+		})
+			.then(() => actsForm.save())
+			.then(() => {
+				data.patient = clone(patient);
+				$feedback = 'Modifications sauvegardées !';
+				blocked = false;
+			});
 	};
 
 	let unsavedChangesDisplayed = false;
@@ -95,6 +108,7 @@
 	<div class="w-full col-span-2">
 		<Text bind:value={patient.lastname} name="Nom" />
 	</div>
+	<div class="w-full col-span-2" />
 	<div class="w-full col-span-2">
 		<Enum
 			bind:value={patient.gender}
@@ -111,6 +125,12 @@
 	</div>
 	<div class="w-full col-span-2">
 		<Text bind:value={patient.phone} name="Numéro de téléphone" />
+	</div>
+	<div class="w-full col-span-2">
+		<Email bind:value={patient.email} name="Mail" />
+	</div>
+	<div class="w-full col-span-2">
+		<Text bind:value={patient.adress} name="Adresse" />
 	</div>
 	<div class="w-full col-span-2">
 		<Number bind:value={patient.other_ex} name="Autres examens" />
@@ -160,6 +180,14 @@
 	<div class="w-full col-span-2 sm:col-span-6">
 		<TextArea bind:value={patient.comment} name="Commentaires" />
 	</div>
+	<div class="w-full col-span-2 sm:col-span-6">
+		<ActsForm
+			acts={patient.acts}
+			patientId={patient.id}
+			bind:changed={actsChanged}
+			bind:this={actsForm}
+		/>
+	</div>
 </div>
 
 <div
@@ -191,7 +219,7 @@
 		<button
 			{disabled}
 			class="w-32 sm:w-64 h-11 text-gray-300 bg-gray-800 disabled:bg-gray-200 rounded border border-gray-300 transition-colors duration-300"
-			on:click|preventDefault={handleClick}
+			on:click|preventDefault={save}
 		>
 			Sauvegarder
 		</button>

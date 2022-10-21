@@ -3,7 +3,7 @@
 	export let value = '';
 </script>
 
-<div class="w-full h-full relative flex-col">
+<div class="w-full h-full relative flex-col pb-6">
 	<label class="w-full h-6 block" for={name}>{name}</label>
 	<textarea
 		rows="5"

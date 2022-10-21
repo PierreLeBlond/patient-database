@@ -4,8 +4,6 @@
 
 	export let data: PageData;
 
-	console.log(data);
-
 	let blocked = false;
 	$: disabled = blocked;
 

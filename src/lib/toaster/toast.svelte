@@ -1,14 +1,21 @@
 <script lang="ts">
 	import { fly } from 'svelte/transition';
 	import { createEventDispatcher } from 'svelte';
+	import { afterUpdate } from 'svelte';
 
 	const dispatch = createEventDispatcher();
 
 	export let message = '';
 
-	setTimeout(() => {
-		dispatch('toasted');
-	}, 3000);
+	let timeoutId: any;
+	afterUpdate(() => {
+		if (timeoutId) {
+			clearTimeout(timeoutId);
+		}
+		timeoutId = setTimeout(() => {
+			dispatch('toasted');
+		}, 3000);
+	});
 </script>
 
 <div

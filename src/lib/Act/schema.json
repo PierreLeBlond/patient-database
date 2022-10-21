@@ -1,0 +1,18 @@
+{
+  "title": "Act",
+  "type": "object",
+  "properties": {
+    "id": {
+      "type": "integer"
+    },
+    "date": {
+      "type": "string",
+      "format": "date"
+    },
+    "comment": {
+      "type": "string",
+      "maxLength": 3000,
+      "default": ""
+    }
+  }
+}

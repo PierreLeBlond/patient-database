@@ -1,3 +1,5 @@
+import type { Act } from "$lib/Act/Act";
+
 type Gender = "child" | "man" | "woman";
 
 interface Patient {
@@ -10,6 +12,8 @@ interface Patient {
   year: number;
   age: number;
   phone: string;
+  email: string;
+  adress: string;
   other_ex: number;
   cataract: number;
   tear_treatment: number;
@@ -26,6 +30,8 @@ interface Patient {
   treatment: string;
   glasses_holder: boolean;
   comment: string;
+  id: string;
+  acts: Act[];
 }
 
 interface PatientEntry {

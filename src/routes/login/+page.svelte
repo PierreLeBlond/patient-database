@@ -32,7 +32,6 @@
 
 		if (!response.ok) {
 			const body = await response.json();
-			console.log(body);
 			errors = body.status = 400 ? "Nom d'utilisateur ou mot de passe incorrect" : body.message;
 			blocked = false;
 			password = '';

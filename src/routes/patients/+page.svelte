@@ -43,9 +43,7 @@
 		validate(detail);
 		fetch('/patient.json', {
 			method: 'POST',
-			body: JSON.stringify({
-				patient: detail
-			}),
+			body: JSON.stringify(detail),
 			headers: {
 				'Content-type': 'application/json; charset=UTF-8'
 			}
@@ -74,11 +72,11 @@
 	</button>
 	<div>{filtered} patient(s) trouvés sur {total}</div>
 	<ul class="w-full flex flex-col space-y-2 overflow-y-auto snap-y">
-		{#each patients as { id, patient }}
+		{#each patients as patient}
 			<li class="snap-start">
 				<a
 					data-sveltekit-prefetch
-					href="/patient/{id}"
+					href="/patient/{patient.id}"
 					class="w-full h-11 flex items-center justify-between bg-gray-800 text-gray-300 rounded border border-gray-800"
 				>
 					<div
@@ -89,7 +87,7 @@
 					<div>{patient.firstname} {patient.lastname}</div>
 					<div
 						class="flex justify-center items-center w-11 h-full place-self-end bg-red-500 rounded-r"
-						on:click|preventDefault={() => handleDeleteDemand(patient.firstname, id)}
+						on:click|preventDefault={() => handleDeleteDemand(patient.firstname, patient.id)}
 					>
 						<svg
 							xmlns="http://www.w3.org/2000/svg"

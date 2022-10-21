@@ -4,5 +4,5 @@
 </script>
 
 {#if $navigating}
-	<div in:load={{}} class="w-full h-1 z-30 bg-orange-600" />
+	<div in:load={{}} class="w-full h-1 absolute z-50 bg-orange-600" />
 {/if}

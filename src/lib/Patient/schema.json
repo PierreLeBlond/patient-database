@@ -43,6 +43,16 @@
       "maxLength": 64,
       "default": ""
     },
+    "email": {
+      "type": "string",
+      "maxLength": 64,
+      "default": ""
+    },
+    "adress": {
+      "type": "string",
+      "maxLength": 64,
+      "default": ""
+    },
     "other_ex": {
       "type": "number",
       "default": 0
