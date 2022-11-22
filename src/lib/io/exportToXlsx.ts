@@ -28,7 +28,8 @@ const worksheetColumnNames = [
   "LAF",
   "Ordonnance",
   "Traitement",
-  "Commentaires"
+  "Commentaires",
+  "Actes de suivi"
 ];
 const worksheetName = 'Fiches-Patients';
 
@@ -65,7 +66,8 @@ const jsonToXlsx = async (patients: Patient[]) => {
     patient.glasses_donation,
     patient.treatment,
     patient.glasses_holder,
-    patient.comment
+    patient.comment,
+    patient.acts.reduce((acts, act) => acts !== "" ? `${acts}\n\n${act.date}\n${act.comment}` : `${act.date}\n${act.comment}`, "")
   ]);
   const workbook = xlsx.utils.book_new();
   const worksheetData = [
