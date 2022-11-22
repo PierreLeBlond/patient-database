@@ -1,4 +1,4 @@
-import type { Patient, PatientEntry } from '$lib/Patient/Patient';
+import type { Patient } from '$lib/Patient/Patient';
 import * as xlsx from 'xlsx/xlsx.mjs';
 
 const worksheetColumnNames = [
@@ -37,8 +37,8 @@ const genderMap: { child: string, man: string, woman: string } = {
   "man": "Homme",
   "woman": "Femme"
 }
-const jsonToXlsx = async (patients: PatientEntry[]) => {
-  const data = patients.map(({ patient }) => [
+const jsonToXlsx = async (patients: Patient[]) => {
+  const data = patients.map((patient) => [
     patient.date,
     patient.file.toString(),
     patient.aftercare ? 'oui' : 'non',
